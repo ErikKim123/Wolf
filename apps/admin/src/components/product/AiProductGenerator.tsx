@@ -1,7 +1,7 @@
 // Design Ref: §5 Phase 3 — 상품 상세 HTML 에디터 (직접 작성 우선) + AI 초안 생성(보조) + 번역
 'use client';
 import { useState } from 'react';
-import { Sparkles, Languages, Loader2, ChevronDown, ChevronUp, Code } from 'lucide-react';
+import { Sparkles, Languages, Loader2, ChevronDown, ChevronUp, Code, Eye, X } from 'lucide-react';
 import { pickI18n, type I18n, type Locale } from '@wolf/shared';
 import { sanitizeHtml } from '@/lib/sanitize';
 
@@ -28,6 +28,7 @@ export function AiProductGenerator({
   const html: I18n = value ?? {};
   const [tab, setTab] = useState<Locale>('en');
   const [showAi, setShowAi] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
   const [keywords, setKeywords] = useState('');
   const [features, setFeatures] = useState('');
   const [imageUrls, setImageUrls] = useState('');
@@ -214,7 +215,17 @@ export function AiProductGenerator({
 
       {/* 라이브 미리보기 (항상) */}
       <div className="rounded-lg border border-grey-200 p-3">
-        <p className="label-caps mb-2 text-grey-400">미리보기 ({LABEL[tab]})</p>
+        <div className="mb-2 flex items-center justify-between">
+          <p className="label-caps text-grey-400">미리보기 ({LABEL[tab]})</p>
+          <button
+            type="button"
+            onClick={() => setShowPreview(true)}
+            disabled={!html[tab]}
+            className="flex items-center gap-1 text-xs text-grey-500 hover:text-black disabled:opacity-40"
+          >
+            <Eye size={14} /> 전체 미리보기
+          </button>
+        </div>
         {html[tab] ? (
           <div
             className="text-sm text-grey-800 [&_h2]:mt-4 [&_h2]:font-display [&_h2]:text-lg [&_h2]:uppercase [&_img]:my-2 [&_img]:rounded [&_li]:ml-4 [&_li]:list-disc [&_p]:my-2"
@@ -224,6 +235,35 @@ export function AiProductGenerator({
           <p className="text-xs text-grey-400">에디터에 입력하면 여기에 미리보기가 표시됩니다.</p>
         )}
       </div>
+
+      {/* 전체 미리보기 모달 — 실제 고객 상품 상세처럼 렌더 */}
+      {showPreview && html[tab] && (
+        <div
+          className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/50 p-4"
+          onClick={() => setShowPreview(false)}
+        >
+          <div
+            className="my-8 w-full max-w-2xl rounded-xl bg-white p-6 md:p-8"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="mb-4 flex items-center justify-between border-b border-grey-200 pb-3">
+              <span className="label-caps text-grey-500">상품 상세 미리보기 ({LABEL[tab]})</span>
+              <button
+                type="button"
+                onClick={() => setShowPreview(false)}
+                aria-label="닫기"
+                className="text-grey-400 hover:text-black"
+              >
+                <X size={20} />
+              </button>
+            </div>
+            <div
+              className="text-grey-800 [&_h2]:mt-8 [&_h2]:font-display [&_h2]:text-2xl [&_h2]:uppercase [&_h2]:tracking-tight [&_img]:my-4 [&_img]:rounded-lg [&_li]:ml-5 [&_li]:list-disc [&_p]:my-3 [&_p]:leading-relaxed [&_ul]:my-3"
+              dangerouslySetInnerHTML={{ __html: sanitizeHtml(html[tab]) }}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
