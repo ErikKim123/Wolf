@@ -1,0 +1,104 @@
+{
+  "meta": {
+    "title": "Wolf — 마켓플레이스",
+    "description": "파트너 입점형 마켓플레이스 — 상품 · 티켓 · 구독."
+  },
+  "nav": {
+    "shop": "쇼핑",
+    "tickets": "티켓",
+    "subscription": "구독",
+    "boards": "고객지원"
+  },
+  "home": {
+    "featured": "추천 상품",
+    "categories": "카테고리",
+    "viewAll": "전체보기",
+    "empty": "표시할 내용이 아직 없습니다."
+  },
+  "shop": {
+    "title": "쇼핑",
+    "all": "전체"
+  },
+  "search": {
+    "title": "검색",
+    "placeholder": "상품 검색...",
+    "resultsFor": "검색 결과",
+    "empty": "검색 결과가 없습니다."
+  },
+  "product": {
+    "partner": "파트너",
+    "official": "울프",
+    "soldout": "품절",
+    "addToCart": "장바구니 담기",
+    "added": "담겼습니다",
+    "types": {
+      "physical": "실물",
+      "ticket": "티켓",
+      "subscription": "구독"
+    }
+  },
+  "cart": {
+    "title": "장바구니",
+    "empty": "장바구니가 비어 있습니다.",
+    "total": "합계",
+    "checkout": "결제하기",
+    "remove": "삭제",
+    "continue": "쇼핑 계속하기",
+    "orderComplete": "주문 완료",
+    "orderNo": "주문번호",
+    "loginRequired": "결제하려면 로그인하세요."
+  },
+  "orders": {
+    "title": "주문내역",
+    "empty": "주문 내역이 없습니다.",
+    "items": "개 상품",
+    "status": {
+      "pending": "결제대기",
+      "paid": "결제완료",
+      "shipped": "발송",
+      "done": "완료",
+      "cancelled": "취소",
+      "refunded": "환불"
+    }
+  },
+  "shipping": {
+    "title": "배송",
+    "carrier": "택배사",
+    "tracking": "송장번호",
+    "eta": "도착예정",
+    "domestic": "국내",
+    "overseas": "해외",
+    "none": "배송 준비 중",
+    "status": {
+      "preparing": "준비중",
+      "shipped": "발송",
+      "delivered": "배송완료"
+    }
+  },
+  "boards": {
+    "title": "고객지원",
+    "all": "전체",
+    "notice": "공지",
+    "qna": "문의",
+    "review": "후기",
+    "faq": "FAQ",
+    "empty": "게시글이 없습니다."
+  },
+  "auth": {
+    "login": "로그인",
+    "signup": "회원가입",
+    "email": "이메일",
+    "password": "비밀번호",
+    "name": "이름",
+    "submit": "계속",
+    "toSignup": "회원가입",
+    "toLogin": "이미 계정이 있으신가요? 로그인",
+    "confirmSent": "가입 확인 이메일을 확인한 뒤 로그인하세요.",
+    "account": "내 계정",
+    "logout": "로그아웃"
+  },
+  "footer": {
+    "rights": "All rights reserved.",
+    "tagline": "파트너 입점형 마켓플레이스 — 상품 · 티켓 · 구독."
+  }
+}

@@ -1,0 +1,104 @@
+{
+  "meta": {
+    "title": "Wolf — Marketplace",
+    "description": "Partner marketplace — gear, tickets & subscriptions."
+  },
+  "nav": {
+    "shop": "Shop",
+    "tickets": "Tickets",
+    "subscription": "Subscription",
+    "boards": "Support"
+  },
+  "home": {
+    "featured": "Featured",
+    "categories": "Categories",
+    "viewAll": "View all",
+    "empty": "Nothing to show yet."
+  },
+  "shop": {
+    "title": "Shop",
+    "all": "All"
+  },
+  "search": {
+    "title": "Search",
+    "placeholder": "Search products...",
+    "resultsFor": "Results for",
+    "empty": "No results found."
+  },
+  "product": {
+    "partner": "Partner",
+    "official": "Wolf",
+    "soldout": "Sold out",
+    "addToCart": "Add to cart",
+    "added": "Added to cart",
+    "types": {
+      "physical": "Product",
+      "ticket": "Ticket",
+      "subscription": "Subscription"
+    }
+  },
+  "cart": {
+    "title": "Cart",
+    "empty": "Your cart is empty.",
+    "total": "Total",
+    "checkout": "Checkout",
+    "remove": "Remove",
+    "continue": "Continue shopping",
+    "orderComplete": "Order placed",
+    "orderNo": "Order number",
+    "loginRequired": "Please sign in to check out."
+  },
+  "orders": {
+    "title": "My Orders",
+    "empty": "No orders yet.",
+    "items": "items",
+    "status": {
+      "pending": "Pending",
+      "paid": "Paid",
+      "shipped": "Shipped",
+      "done": "Completed",
+      "cancelled": "Cancelled",
+      "refunded": "Refunded"
+    }
+  },
+  "shipping": {
+    "title": "Shipping",
+    "carrier": "Carrier",
+    "tracking": "Tracking no.",
+    "eta": "Est. delivery",
+    "domestic": "Domestic",
+    "overseas": "Overseas",
+    "none": "Preparing your shipment",
+    "status": {
+      "preparing": "Preparing",
+      "shipped": "Shipped",
+      "delivered": "Delivered"
+    }
+  },
+  "boards": {
+    "title": "Support",
+    "all": "All",
+    "notice": "Notice",
+    "qna": "Q&A",
+    "review": "Reviews",
+    "faq": "FAQ",
+    "empty": "No posts yet."
+  },
+  "auth": {
+    "login": "Sign in",
+    "signup": "Create account",
+    "email": "Email",
+    "password": "Password",
+    "name": "Name",
+    "submit": "Continue",
+    "toSignup": "Create an account",
+    "toLogin": "Already have an account? Sign in",
+    "confirmSent": "Check your email to confirm your account, then sign in.",
+    "account": "Account",
+    "logout": "Sign out"
+  },
+  "footer": {
+    "rights": "All rights reserved.",
+    "tagline": "Partner marketplace — gear, tickets & subscriptions."
+  }
+}

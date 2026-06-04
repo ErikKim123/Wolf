@@ -1,0 +1,42 @@
+/* Design Ref: Design_System/colors_and_type.css — JNJ SCORE 토큰 + Oswald (apps/admin 과 공유) */
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-white text-black font-sans antialiased;
+  }
+  /* 헤드라인은 Oswald (대문자 라우드) */
+  h1, h2, h3 {
+    @apply font-display;
+  }
+}
+
+@layer components {
+  /* 시그니처 pill 버튼 */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-pill px-6 py-3
+           text-sm font-medium transition-colors duration-200 ease-jnj
+           focus-visible:outline-none focus-visible:shadow-focus disabled:cursor-not-allowed;
+  }
+  .btn-primary { @apply bg-black text-white hover:bg-grey-500 disabled:bg-grey-200 disabled:text-grey-400; }
+  .btn-secondary { @apply border-[1.5px] border-grey-300 text-black hover:border-grey-500 hover:bg-grey-200; }
+  .btn-sm { @apply px-4 py-2 text-[14px]; }
+
+  /* 라벨/배지 — ALL CAPS, tight */
+  .label-caps { @apply text-[12px] font-medium uppercase tracking-tight text-grey-500; }
+
+  /* 고객몰: 콘텐츠 컨테이너 (반응형 가운데 정렬) */
+  .container-wolf { @apply mx-auto w-full max-w-[1280px] px-4 sm:px-6 lg:px-8; }
+
+  /* 섹션 제목 — Oswald 대문자 */
+  .section-title { @apply font-display text-2xl uppercase tracking-tight md:text-3xl; }
+
+  /* 상품 카드 */
+  .product-card {
+    @apply flex flex-col overflow-hidden rounded-lg border border-grey-200 bg-white
+           transition-shadow duration-200 hover:shadow-[0_4px_20px_rgba(0,0,0,0.06)];
+  }
+}

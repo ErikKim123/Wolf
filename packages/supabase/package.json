@@ -1,0 +1,15 @@
+{
+  "name": "@wolf/supabase",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Supabase 스키마/마이그레이션/RLS/seed 단일 소스",
+  "scripts": {
+    "migrate": "psql \"$DATABASE_URL\" -f schema.sql",
+    "seed": "psql \"$DATABASE_URL\" -f seed.sql",
+    "test:rls": "psql \"$DATABASE_URL\" -f tests/db/rls.test.sql",
+    "db:verify": "node verify.mjs"
+  },
+  "devDependencies": {
+    "pg": "^8.13.0"
+  }
+}

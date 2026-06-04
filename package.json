@@ -1,0 +1,18 @@
+{
+  "name": "wolf-app",
+  "version": "0.1.0",
+  "private": true,
+  "description": "파트너 입점형 마켓플레이스 — 자사/파트너 상품 + 티켓 + SaaS 구독 + AI 상품페이지 + 다국어",
+  "packageManager": "pnpm@9.0.0",
+  "scripts": {
+    "dev": "pnpm --filter @wolf/admin dev",
+    "build": "pnpm -r build",
+    "typecheck": "pnpm -r typecheck",
+    "lint": "pnpm -r lint",
+    "db:migrate": "pnpm --filter @wolf/supabase migrate",
+    "db:seed": "pnpm --filter @wolf/supabase seed"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

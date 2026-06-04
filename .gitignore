@@ -1,0 +1,21 @@
+# Design Ref: §7 — service_role 키/.env 절대 노출 금지
+# dependencies
+node_modules/
+.pnpm-store/
+
+# env (특히 SUPABASE_SERVICE_ROLE_KEY, STRIPE/PORTONE/ANTHROPIC 키)
+.env
+.env.*
+!.env.example
+
+# build
+dist/
+.next/
+out/
+build/
+
+# logs / misc
+*.log
+.DS_Store
+.turbo/
+coverage/

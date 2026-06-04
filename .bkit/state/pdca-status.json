@@ -1,0 +1,85 @@
+{
+  "version": "3.0",
+  "lastUpdated": "2026-06-04T02:16:36.065Z",
+  "activeFeatures": ["wolf-app", "wolf-admin"],
+  "primaryFeature": "wolf-admin",
+  "features": {
+    "wolf-admin": {
+      "phase": "completed",
+      "matchRate": 96.4,
+      "matchRateMode": "static-only",
+      "iterationNote": "Important G1(JSON 검증)/G2(zod) 수정 → 94.8→96.4",
+      "runtime": { "l1": "6/6 PASS", "build": "next build ✓ (9 routes, typecheck pass)", "l2l3": "pending (anon key + dev server + playwright)", "bugsFixed": ["shared .js import", "login Suspense", "cookie/zod/upsert types"] },
+      "analysisPath": "docs/03-analysis/wolf-admin.analysis.md",
+      "reportPath": "docs/04-report/wolf-admin.report.md",
+      "planPath": "docs/01-plan/features/wolf-admin.plan.md",
+      "designPath": "docs/02-design/features/wolf-admin.design.md",
+      "architecture": "Option C (config-driven)",
+      "scope": "공통기반 + 회원/파트너/상품/카테고리 (Phase 1)",
+      "level": "Dynamic",
+      "doProgress": { "completed": ["module-1", "module-2", "module-3", "module-4"], "remaining": [] },
+      "designSystem": "Design_System (JNJ SCORE)",
+      "globalReqs": ["responsive PC/mobile", "Design_System 준수"],
+      "startedAt": "2026-06-04T02:16:36.065Z"
+    },
+    "wolf-app": {
+      "phase": "completed",
+      "matchRate": 99.0,
+      "matchRateMode": "static+runtime",
+      "runtime": { "executed": true, "pass": 13, "fail": 0, "db": "supabase:wpahhleendnsewuptrhm" },
+      "planPath": "docs/01-plan/features/wolf-app.plan.md",
+      "designPath": "docs/02-design/features/wolf-app.design.md",
+      "analysisPath": "docs/03-analysis/wolf-app.analysis.md",
+      "reportPath": "docs/04-report/wolf-app.report.md",
+      "architecture": "Option C (Pragmatic)",
+      "scope": "full-roadmap + Phase 0 detail",
+      "level": "Dynamic",
+      "doProgress": { "completed": ["module-1", "module-2", "module-3", "module-4"], "remaining": [] },
+      "startedAt": "2026-06-04T02:16:36.065Z"
+    }
+  },
+  "pipeline": {
+    "currentPhase": 1,
+    "level": "Dynamic",
+    "phaseHistory": []
+  },
+  "session": {
+    "startedAt": "2026-06-04T02:04:33.743Z",
+    "onboardingCompleted": false,
+    "lastActivity": "2026-06-04T02:16:36.065Z"
+  },
+  "history": [
+    { "ts": "2026-06-04T02:16:36.065Z", "event": "pdca_plan_created", "feature": "wolf-app", "task": "[Plan] wolf-app" },
+    { "ts": "2026-06-04T02:16:36.065Z", "event": "pdca_design_created", "feature": "wolf-app", "task": "[Design] wolf-app", "architecture": "Option C (Pragmatic)" },
+    { "ts": "2026-06-04T02:16:36.065Z", "event": "pdca_do_progress", "feature": "wolf-app", "task": "[Do] wolf-app", "scope": ["module-1", "module-2"] },
+    { "ts": "2026-06-04T02:16:36.065Z", "event": "pdca_do_completed", "feature": "wolf-app", "task": "[Do] wolf-app", "scope": ["module-3", "module-4"], "note": "Phase 0 전체 모듈 구현 완료" },
+    { "ts": "2026-06-04T02:16:36.065Z", "event": "pdca_check_completed", "feature": "wolf-app", "task": "[Check] wolf-app", "matchRate": 98.4, "mode": "static-only", "missing": 0 },
+    { "ts": "2026-06-04T02:16:36.065Z", "event": "pdca_report_completed", "feature": "wolf-app", "task": "[Report] wolf-app", "note": "Phase 0 완료, SC 7/7" },
+    { "ts": "2026-06-04T02:16:36.065Z", "event": "runtime_verified", "feature": "wolf-app", "matchRate": 99.0, "pass": 13, "fail": 0, "note": "실 Supabase db:verify 13/13 PASS, seed UUID hex 정정" },
+    { "ts": "2026-06-04T02:16:36.065Z", "event": "pdca_plan_created", "feature": "wolf-admin", "task": "[Plan] wolf-admin", "note": "Phase 1 운영자 관리 페이지" },
+    { "ts": "2026-06-04T02:16:36.065Z", "event": "pdca_design_created", "feature": "wolf-admin", "task": "[Design] wolf-admin", "architecture": "Option C (config-driven)" },
+    { "ts": "2026-06-04T02:16:36.065Z", "event": "requirements_updated", "note": "설명.txt v2: 반응형 PC/모바일 + Design_System(JNJ SCORE) 준수 추가" },
+    { "ts": "2026-06-04T02:16:36.065Z", "event": "pdca_do_progress", "feature": "wolf-admin", "task": "[Do] wolf-admin", "scope": ["module-1", "module-2"], "note": "앱초기화+인증게이트+공통엔진, JNJ 토큰+반응형 적용" },
+    { "ts": "2026-06-04T02:16:36.065Z", "event": "pdca_do_completed", "feature": "wolf-admin", "task": "[Do] wolf-admin", "scope": ["module-3", "module-4"], "note": "회원/파트너/상품/카테고리 화면 + L1/L2/L3 테스트, Phase 1 우선화면 전체 구현" },
+    { "ts": "2026-06-04T02:16:36.065Z", "event": "pdca_check_completed", "feature": "wolf-admin", "task": "[Check] wolf-admin", "matchRate": 96.4, "mode": "static-only", "note": "Important 2건 즉시 수정(G1 JSON검증, G2 zod), Critical 0" },
+    { "ts": "2026-06-04T02:16:36.065Z", "event": "pdca_report_completed", "feature": "wolf-admin", "task": "[Report] wolf-admin", "note": "Phase 1 완료, SC 7/7, 정적 96.4%" },
+    { "ts": "2026-06-04T02:16:36.065Z", "event": "runtime_verified_partial", "feature": "wolf-admin", "note": "L1 6/6 PASS (실 Supabase). L2/L3 차단(C: 디스크 풀)" },
+    { "ts": "2026-06-04T02:16:36.065Z", "event": "build_verified", "feature": "wolf-admin", "note": "npm 캐시 z: 우회 후 next build ✓ 9라우트+타입체크. 빌드 버그 3종 수정(shared .js import/login Suspense/타입)" }
+  ],
+  "stateMachine": {
+    "defaultWorkflow": "default",
+    "activeWorkflows": {},
+    "totalTransitions": 0
+  },
+  "automation": {
+    "globalLevel": 2,
+    "trustScore": 40,
+    "pendingApprovals": 0,
+    "lastGateResult": null
+  },
+  "team": {
+    "enabled": true,
+    "stateFile": ".bkit/runtime/agent-state.json",
+    "eventsFile": ".bkit/runtime/agent-events.jsonl"
+  }
+}
