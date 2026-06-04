@@ -5,12 +5,19 @@ import { NextResponse, type NextRequest } from 'next/server';
 type CookieToSet = { name: string; value: string; options?: CookieOptions };
 
 export async function middleware(request: NextRequest) {
-  let response = NextResponse.next({ request });
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
+  // 환경변수 누락 시 가드 스킵 (500/MIDDLEWARE_INVOCATION_FAILED 방지).
+  // 로그인 페이지는 떠야 사용자가 설정 누락을 인지할 수 있다.
+  if (!supabaseUrl || !supabaseKey) {
+    return NextResponse.next();
+  }
+
+  try {
+    let response = NextResponse.next({ request });
+
+    const supabase = createServerClient(supabaseUrl, supabaseKey, {
       cookies: {
         getAll() {
           return request.cookies.getAll();
@@ -23,26 +30,31 @@ export async function middleware(request: NextRequest) {
           );
         },
       },
-    },
-  );
+    });
 
-  const { data: { user } } = await supabase.auth.getUser();
-  const { pathname } = request.nextUrl;
-  const isLogin = pathname.startsWith('/login');
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    const { pathname } = request.nextUrl;
+    const isLogin = pathname.startsWith('/login');
 
-  // 미인증 + 보호 경로 → 로그인
-  if (!user && !isLogin) {
-    const url = request.nextUrl.clone();
-    url.pathname = '/login';
-    return NextResponse.redirect(url);
+    // 미인증 + 보호 경로 → 로그인
+    if (!user && !isLogin) {
+      const url = request.nextUrl.clone();
+      url.pathname = '/login';
+      return NextResponse.redirect(url);
+    }
+    // 인증됨 + 로그인 페이지 → 대시보드
+    if (user && isLogin) {
+      const url = request.nextUrl.clone();
+      url.pathname = '/dashboard';
+      return NextResponse.redirect(url);
+    }
+    return response;
+  } catch {
+    // 세션 조회 실패해도 페이지는 렌더 (가드는 (dashboard)/layout 에서 2차 방어)
+    return NextResponse.next();
   }
-  // 인증됨 + 로그인 페이지 → 대시보드
-  if (user && isLogin) {
-    const url = request.nextUrl.clone();
-    url.pathname = '/dashboard';
-    return NextResponse.redirect(url);
-  }
-  return response;
 }
 
 export const config = {
