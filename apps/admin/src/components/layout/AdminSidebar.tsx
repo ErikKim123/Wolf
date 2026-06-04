@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import {
   LayoutDashboard, Users, Store, Package, FolderTree, ShoppingCart, Truck,
-  MessageSquare, Image, LayoutGrid, Menu, X, LogOut,
+  MessageSquare, Image, LayoutGrid, Ticket, Menu, X, LogOut,
   type LucideIcon,
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
@@ -23,6 +23,7 @@ const NAV: { href: string; label: string; icon: LucideIcon; disabled?: boolean }
   { href: '/boards', label: '게시판관리', icon: MessageSquare },
   { href: '/banners', label: '배너관리', icon: Image },
   { href: '/main-sections', label: '메인화면관리', icon: LayoutGrid },
+  { href: '/coupons', label: '쿠폰관리', icon: Ticket },
 ];
 
 export function AdminSidebar({ email }: { email: string }) {

@@ -7,6 +7,7 @@ import { pickI18n, pickPrice, toDisplayAmount, type Currency, type Locale } from
 import { currencyForLocale, intlLocale } from '@/lib/locale';
 import { createClient } from '@/lib/supabase/client';
 import { useCart } from '@/lib/cart/CartContext';
+import { validateCoupon } from '@/lib/coupon';
 import type { Dictionary } from '@/i18n/dictionaries';
 
 function makeOrderNo(): string {
@@ -46,6 +47,26 @@ export function CheckoutView({
 
   const totalMinor = items.reduce((s, i) => s + (pickPrice(i.prices, currency) ?? 0) * i.qty, 0);
 
+  const [couponCode, setCouponCode] = useState('');
+  const [applied, setApplied] = useState<{ code: string; discount: number } | null>(null);
+  const [couponMsg, setCouponMsg] = useState<string | null>(null);
+
+  const discountMinor = applied?.discount ?? 0;
+  const finalMinor = Math.max(0, totalMinor - discountMinor);
+
+  async function applyCoupon() {
+    setCouponMsg(null);
+    const today = new Date().toISOString().slice(0, 10);
+    const res = await validateCoupon(couponCode, totalMinor, currency, today);
+    if (res.ok) {
+      setApplied({ code: res.coupon.code, discount: res.discount });
+      setCouponMsg(dict.cart.couponApplied);
+    } else {
+      setApplied(null);
+      setCouponMsg(res.reason === 'min' ? dict.cart.couponMin : dict.cart.couponInvalid);
+    }
+  }
+
   async function placeOrder() {
     setError(null);
     setPlacing(true);
@@ -58,7 +79,7 @@ export function CheckoutView({
           order_no: no,
           buyer_id: userId,
           status: 'pending',
-          total_amount: totalMinor,
+          total_amount: finalMinor,
           currency,
           payment_method: null,
         })
@@ -134,9 +155,40 @@ export function CheckoutView({
         ))}
       </ul>
 
-      <div className="mt-6 flex items-center justify-between">
-        <span className="label-caps">{dict.cart.total}</span>
-        <span className="font-display text-2xl">{fmt(totalMinor)}</span>
+      {/* 쿠폰 */}
+      <div className="mt-6 flex gap-2">
+        <input
+          className="input flex-1"
+          placeholder={dict.cart.couponPlaceholder}
+          value={couponCode}
+          onChange={(e) => setCouponCode(e.target.value)}
+        />
+        <button type="button" className="btn btn-secondary btn-sm whitespace-nowrap" onClick={applyCoupon}>
+          {dict.cart.apply}
+        </button>
+      </div>
+      {couponMsg && (
+        <p className={`mt-1.5 text-sm ${applied ? 'text-success' : 'text-danger'}`}>{couponMsg}</p>
+      )}
+
+      {/* 합계 */}
+      <div className="mt-6 space-y-1.5 border-t border-grey-100 pt-4">
+        <div className="flex justify-between text-sm text-grey-600">
+          <span>{dict.cart.subtotal}</span>
+          <span>{fmt(totalMinor)}</span>
+        </div>
+        {discountMinor > 0 && (
+          <div className="flex justify-between text-sm text-success">
+            <span>
+              {dict.cart.discount} ({applied?.code})
+            </span>
+            <span>-{fmt(discountMinor)}</span>
+          </div>
+        )}
+        <div className="flex items-center justify-between pt-1">
+          <span className="label-caps">{dict.cart.total}</span>
+          <span className="font-display text-2xl">{fmt(finalMinor)}</span>
+        </div>
       </div>
 
       <button

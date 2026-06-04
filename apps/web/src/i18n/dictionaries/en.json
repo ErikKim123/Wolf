@@ -46,7 +46,15 @@
     "continue": "Continue shopping",
     "orderComplete": "Order placed",
     "orderNo": "Order number",
-    "loginRequired": "Please sign in to check out."
+    "loginRequired": "Please sign in to check out.",
+    "coupon": "Coupon",
+    "couponPlaceholder": "Enter code",
+    "apply": "Apply",
+    "discount": "Discount",
+    "subtotal": "Subtotal",
+    "couponInvalid": "Invalid or expired coupon.",
+    "couponMin": "Order total is below this coupon's minimum.",
+    "couponApplied": "Coupon applied"
   },
   "orders": {
     "title": "My Orders",

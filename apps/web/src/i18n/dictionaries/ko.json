@@ -46,7 +46,15 @@
     "continue": "쇼핑 계속하기",
     "orderComplete": "주문 완료",
     "orderNo": "주문번호",
-    "loginRequired": "결제하려면 로그인하세요."
+    "loginRequired": "결제하려면 로그인하세요.",
+    "coupon": "쿠폰",
+    "couponPlaceholder": "코드 입력",
+    "apply": "적용",
+    "discount": "할인",
+    "subtotal": "상품 합계",
+    "couponInvalid": "유효하지 않거나 만료된 쿠폰입니다.",
+    "couponMin": "이 쿠폰의 최소 주문금액에 미달합니다.",
+    "couponApplied": "쿠폰 적용됨"
   },
   "orders": {
     "title": "주문내역",
