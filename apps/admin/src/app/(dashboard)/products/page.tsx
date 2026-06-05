@@ -5,7 +5,11 @@ import type { ColumnDef } from '@tanstack/react-table';
 import { ResourceListPage } from '@/components/resource/ResourceListPage';
 import { ResourceFormPage } from '@/components/resource/ResourceFormPage';
 import { FormDrawer } from '@/components/resource/FormDrawer';
-import { useStatusTransition } from '@/lib/queries/resource';
+import {
+  useStatusTransition,
+  useResourceDelete,
+  useResourceDuplicate,
+} from '@/lib/queries/resource';
 import { useCategoryOptions } from '@/lib/queries/options';
 import {
   productsConfig,
@@ -15,20 +19,34 @@ import {
 import type { FieldDef } from '@/lib/resource/types';
 import { AiProductGenerator } from '@/components/product/AiProductGenerator';
 import { EventEditor } from '@/components/product/EventEditor';
-import type { EventContent, I18n } from '@wolf/shared';
+import { pickI18n, type EventContent, type I18n } from '@wolf/shared';
 
 function ProductActions({ row }: { row: ProductRow }) {
   const transition = useStatusTransition('products', 'products');
+  const del = useResourceDelete('products', 'products');
+  const dup = useResourceDuplicate('products', 'products');
   const allowed = PRODUCT_TRANSITIONS[row.status] ?? [];
-  if (allowed.length === 0) return <span className="text-grey-400">—</span>;
+  const busy = transition.isPending || del.isPending || dup.isPending;
+  const name = pickI18n(row.name_i18n, 'ko') || pickI18n(row.name_i18n, 'en') || row.code || '상품';
+
   return (
-    <div className="flex gap-1" onClick={(e) => e.stopPropagation()}>
+    <div className="flex flex-wrap gap-1" onClick={(e) => e.stopPropagation()}>
       {allowed.map((t) => (
-        <button key={t.to} className="btn btn-secondary btn-sm" disabled={transition.isPending}
+        <button key={t.to} className="btn btn-secondary btn-sm" disabled={busy}
           onClick={() => transition.mutate({ id: row.id, status: t.to })}>
           {t.label}
         </button>
       ))}
+      <button className="btn btn-secondary btn-sm" disabled={busy}
+        title="이 상품을 초안으로 복제" onClick={() => dup.mutate(row.id)}>
+        복사
+      </button>
+      <button className="btn btn-secondary btn-sm text-danger" disabled={busy}
+        onClick={() => {
+          if (window.confirm(`'${name}' 상품을 삭제하시겠어요? 되돌릴 수 없습니다.`)) del.mutate(row.id);
+        }}>
+        삭제
+      </button>
     </div>
   );
 }
