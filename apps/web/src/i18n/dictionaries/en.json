@@ -5,6 +5,7 @@
   },
   "nav": {
     "shop": "Shop",
+    "calendar": "Event Calendar",
     "tickets": "Tickets",
     "subscription": "Subscription",
     "boards": "Support"
@@ -129,5 +130,11 @@
       "recommend": "Recommended",
       "refund": "Cancellation / Refund"
     }
+  },
+  "events": {
+    "title": "Event Calendar",
+    "today": "Today",
+    "count": "{n} events",
+    "none": "No events on the selected date."
   }
 }

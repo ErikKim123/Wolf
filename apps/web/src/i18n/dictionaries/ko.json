@@ -5,6 +5,7 @@
   },
   "nav": {
     "shop": "쇼핑",
+    "calendar": "행사 캘린더",
     "tickets": "티켓",
     "subscription": "구독",
     "boards": "고객지원"
@@ -129,5 +130,11 @@
       "recommend": "추천",
       "refund": "취소/환불"
     }
+  },
+  "events": {
+    "title": "행사 캘린더",
+    "today": "오늘",
+    "count": "{n}개의 행사",
+    "none": "선택한 날짜에 행사가 없습니다."
   }
 }
