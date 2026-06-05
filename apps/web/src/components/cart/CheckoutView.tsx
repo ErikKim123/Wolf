@@ -82,6 +82,8 @@ export function CheckoutView({
           total_amount: finalMinor,
           currency,
           payment_method: null,
+          coupon_code: applied?.code ?? null,
+          discount_amount: discountMinor,
         })
         .select('id')
         .single();
@@ -102,6 +104,11 @@ export function CheckoutView({
       });
       const { error: ierr } = await supabase.from('order_items').insert(rows);
       if (ierr) throw ierr;
+
+      // 쿠폰 사용 횟수 원자적 증가(RLS 우회 RPC). 주문은 이미 생성됐으므로 실패해도 주문은 유지.
+      if (applied?.code) {
+        await supabase.rpc('redeem_coupon', { p_code: applied.code });
+      }
 
       clear();
       setOrderNo(no);
