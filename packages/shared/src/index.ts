@@ -2,4 +2,5 @@
 export * from './types/index';
 export * from './i18n';
 export * from './prices';
+export * from './media';
 export * from './supabase/index';

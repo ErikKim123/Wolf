@@ -12,6 +12,7 @@ import {
 import { currencyForLocale, intlLocale } from '@/lib/locale';
 import { sanitizeHtml } from '@/lib/sanitize';
 import { AddToCartButton } from '@/components/cart/AddToCartButton';
+import { MediaGallery } from '@/components/product/MediaGallery';
 import type { ProductDetail as Product } from '@/lib/queries/product';
 import type { Dictionary } from '@/i18n/dictionaries';
 
@@ -187,6 +188,8 @@ export function EventDetail({
         <div className="grid gap-8 lg:grid-cols-[1fr_22rem] lg:items-start">
           {/* 섹션 본문 (좌) */}
           <div className="order-2 space-y-12 pb-12 lg:order-1">
+            {/* 미디어 갤러리 (유튜브·인스타·이미지·동영상) */}
+            <MediaGallery items={ev.media} />
             {sections.map((s) => (
               <section key={s.key} id={s.key} className="scroll-mt-24">
                 <h2 className="mb-4 border-l-4 border-primary pl-3 font-display text-2xl font-bold">

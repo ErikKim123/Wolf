@@ -5,6 +5,8 @@ import { useEffect, useRef, useState } from 'react';
 import { CalendarClock } from 'lucide-react';
 import {
   EVENT_SECTION_KEYS,
+  resolveMedia,
+  MEDIA_KIND_LABEL,
   type EventContent,
   type EventSectionKey,
   type I18n,
@@ -58,6 +60,21 @@ export function EventEditor({
   const setSection = (key: EventSectionKey, v: I18n) =>
     set({ ...ev, sections: { ...ev.sections, [key]: v } });
 
+  // 미디어(언어공통 URL 배열)
+  const media = ev.media ?? [];
+  const setMedia = (m: string[]) => patch({ media: m });
+  const moveMedia = (i: number, dir: -1 | 1) => {
+    const j = i + dir;
+    if (j < 0 || j >= media.length) return;
+    const n = [...media];
+    const a = n[i];
+    const b = n[j];
+    if (a === undefined || b === undefined) return;
+    n[i] = b;
+    n[j] = a;
+    setMedia(n);
+  };
+
   if (productType && productType !== 'ticket') {
     return (
       <p className="rounded-lg bg-grey-50 p-3 text-xs text-grey-500">
@@ -90,6 +107,52 @@ export function EventEditor({
         <DateTime label="일시 종료" value={ev.endAt} onChange={(v) => patch({ endAt: v })} />
         <DateTime label="신청 시작" value={ev.applyStart} onChange={(v) => patch({ applyStart: v })} />
         <DateTime label="신청 종료" value={ev.applyEnd} onChange={(v) => patch({ applyEnd: v })} />
+      </div>
+
+      {/* 미디어 (언어공통) — 본문 상단 갤러리 */}
+      <div className="space-y-2 border-t border-grey-100 pt-4">
+        <span className="label-caps">미디어 (유튜브·인스타·이미지·동영상 URL)</span>
+        <p className="text-xs text-grey-500">
+          URL 을 붙여넣으면 종류를 자동 인식해 본문 상단에 순서대로 표시합니다. 여러 개 추가할 수 있습니다.
+          인스타그램은 공개 게시물만 표시됩니다.
+        </p>
+        {media.map((url, i) => {
+          const kind = url.trim() ? resolveMedia(url).kind : null;
+          return (
+            <div key={i} className="flex items-center gap-2">
+              <input
+                className="input flex-1"
+                value={url}
+                placeholder="https://youtu.be/… , https://instagram.com/p/… , https://…/image.jpg"
+                onChange={(e) => {
+                  const n = [...media];
+                  n[i] = e.target.value;
+                  setMedia(n);
+                }}
+              />
+              {kind && (
+                <span className="shrink-0 rounded-pill bg-grey-100 px-2 py-1 text-xs text-grey-600">
+                  {MEDIA_KIND_LABEL[kind]}
+                </span>
+              )}
+              <button type="button" className="btn btn-secondary btn-sm" disabled={i === 0}
+                onClick={() => moveMedia(i, -1)}>
+                ↑
+              </button>
+              <button type="button" className="btn btn-secondary btn-sm" disabled={i === media.length - 1}
+                onClick={() => moveMedia(i, 1)}>
+                ↓
+              </button>
+              <button type="button" className="btn btn-secondary btn-sm text-danger"
+                onClick={() => setMedia(media.filter((_, j) => j !== i))}>
+                삭제
+              </button>
+            </div>
+          );
+        })}
+        <button type="button" className="btn btn-secondary btn-sm" onClick={() => setMedia([...media, ''])}>
+          + URL 추가
+        </button>
       </div>
 
       {/* 섹션별 i18n HTML */}

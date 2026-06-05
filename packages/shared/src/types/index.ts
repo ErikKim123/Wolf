@@ -108,6 +108,7 @@ export interface EventContent {
   applyEnd?: string; // 신청 종료
   priceText?: I18n; // 비용 표기 (비우면 상품가격/무료 자동)
   location?: I18n; // 장소
+  media?: string[]; // 미디어 URL 목록(유튜브/인스타/이미지/동영상 자동판별, 언어공통) — 본문 상단 갤러리
   sections?: Partial<Record<EventSectionKey, I18n>>; // 섹션별 i18n HTML
 }
 
