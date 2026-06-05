@@ -1,6 +1,6 @@
 // Design Ref: §5 Phase 3 — 상품 상세 조회 (detail_html_i18n 포함, 상세 진입 시에만)
 import { createClient } from '@/lib/supabase/server';
-import type { I18n, Prices } from '@wolf/shared';
+import type { EventContent, I18n, Prices } from '@wolf/shared';
 
 export interface ProductDetail {
   id: string;
@@ -13,15 +13,16 @@ export interface ProductDetail {
   prices: Prices;
   attributes: Record<string, unknown> | null;
   detail_html_i18n: I18n;
+  event_content: EventContent | null;
   status: string;
 }
 
-/** 상품 단건 — 목록과 달리 detail_html_i18n 까지 포함 */
+/** 상품 단건 — 목록과 달리 detail_html_i18n / event_content 까지 포함 */
 export async function getProduct(id: string): Promise<ProductDetail | null> {
   const { data, error } = await createClient()
     .from('products')
     .select(
-      'id, code, seller_id, product_type, is_partner_product, category_id, name_i18n, prices, attributes, detail_html_i18n, status',
+      'id, code, seller_id, product_type, is_partner_product, category_id, name_i18n, prices, attributes, detail_html_i18n, event_content, status',
     )
     .eq('id', id)
     .maybeSingle();

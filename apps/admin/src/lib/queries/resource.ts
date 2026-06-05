@@ -85,6 +85,43 @@ export function useResourceUpsert<T extends { id?: string }>(config: ResourceCon
   });
 }
 
+/** 리소스 삭제 (RLS: products_seller_write = is_admin() 허용). */
+export function useResourceDelete(table: string, queryKey: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const supabase = createClient();
+      const { error } = await supabase.from(table).delete().eq('id', id);
+      if (error) throw error;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: [queryKey] }),
+  });
+}
+
+/**
+ * 리소스 복제 — 전체 행을 읽어 새 '초안'으로 insert.
+ * id/created_at/updated_at 제외, status=draft, code 에 -COPY 접미.
+ */
+export function useResourceDuplicate(table: string, queryKey: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const supabase = createClient();
+      const { data, error } = await supabase.from(table).select('*').eq('id', id).single();
+      if (error) throw error;
+      const copy: Record<string, unknown> = { ...(data as Record<string, unknown>) };
+      delete copy.id;
+      delete copy.created_at;
+      delete copy.updated_at;
+      if ('status' in copy) copy.status = 'draft';
+      if (typeof copy.code === 'string' && copy.code) copy.code = `${copy.code}-COPY`;
+      const { error: insErr } = await supabase.from(table).insert(copy as never);
+      if (insErr) throw insErr;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: [queryKey] }),
+  });
+}
+
 /** 상태 전이 전용 (partners/products). 허용 전이는 UI에서 가드. */
 export function useStatusTransition(table: string, queryKey: string) {
   const qc = useQueryClient();

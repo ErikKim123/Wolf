@@ -16,8 +16,9 @@ export function Header({
   isAuthed: boolean;
 }) {
   const nav = [
-    { href: `/${locale}/shop`, label: dict.nav.shop },
+    { href: `/${locale}/events`, label: dict.nav.calendar },
     { href: `/${locale}/shop?type=ticket`, label: dict.nav.tickets },
+    { href: `/${locale}/shop`, label: dict.nav.shop },
     { href: `/${locale}/shop?type=subscription`, label: dict.nav.subscription },
     { href: `/${locale}/boards`, label: dict.nav.boards },
   ];

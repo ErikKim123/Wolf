@@ -5,6 +5,7 @@
   },
   "nav": {
     "shop": "쇼핑",
+    "calendar": "행사 캘린더",
     "tickets": "티켓",
     "subscription": "구독",
     "boards": "고객지원"
@@ -108,5 +109,32 @@
   "footer": {
     "rights": "All rights reserved.",
     "tagline": "파트너 입점형 마켓플레이스 — 상품 · 티켓 · 구독."
+  },
+  "event": {
+    "apply": "신청하기",
+    "soldout": "마감",
+    "date": "일시",
+    "period": "신청",
+    "cost": "비용",
+    "location": "장소",
+    "free": "무료",
+    "open": "모집중",
+    "closed": "마감",
+    "addCalendar": "구글 캘린더에 추가하기",
+    "menu": {
+      "about": "행사 소개",
+      "venue": "행사 장소",
+      "notice": "공지/안내",
+      "contact": "문의 하기",
+      "channel": "채널 정보",
+      "recommend": "추천",
+      "refund": "취소/환불"
+    }
+  },
+  "events": {
+    "title": "행사 캘린더",
+    "today": "오늘",
+    "count": "{n}개의 행사",
+    "none": "선택한 날짜에 행사가 없습니다."
   }
 }
