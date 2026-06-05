@@ -12,6 +12,7 @@ import {
 import { currencyForLocale, intlLocale } from '@/lib/locale';
 import { sanitizeHtml } from '@/lib/sanitize';
 import { AddToCartButton } from '@/components/cart/AddToCartButton';
+import { MediaGallery } from '@/components/product/MediaGallery';
 import type { ProductDetail as Product } from '@/lib/queries/product';
 import type { Dictionary } from '@/i18n/dictionaries';
 
@@ -44,10 +45,13 @@ export function EventDetail({
     [ev.sections, locale, dict],
   );
 
-  // 일시/신청 텍스트
+  // datetime-local(TZ 없음)은 KST 절대시각으로 고정 → 서버=클라 일치 (hydration 안전)
+  const toKstDate = (iso: string) => new Date(/[+Z]/.test(iso) ? iso : `${iso}+09:00`);
+
+  // 일시/신청 텍스트 (24시간제 + KST 고정으로 PM/오후 불일치 제거)
   const fmtDateTime = (iso?: string) => {
     if (!iso) return '';
-    const d = new Date(iso);
+    const d = toKstDate(iso);
     if (Number.isNaN(d.getTime())) return iso;
     return new Intl.DateTimeFormat(intl, {
       month: 'long',
@@ -55,6 +59,8 @@ export function EventDetail({
       weekday: 'short',
       hour: '2-digit',
       minute: '2-digit',
+      hour12: false,
+      timeZone: 'Asia/Seoul',
     }).format(d);
   };
   const dateText = ev.startAt
@@ -69,8 +75,8 @@ export function EventDetail({
   const now = new Date();
   const applyOpen =
     !soldout &&
-    (!ev.applyStart || new Date(ev.applyStart) <= now) &&
-    (!ev.applyEnd || new Date(ev.applyEnd) >= now);
+    (!ev.applyStart || toKstDate(ev.applyStart) <= now) &&
+    (!ev.applyEnd || toKstDate(ev.applyEnd) >= now);
 
   // 비용: priceText 우선, 없으면 상품가(0이면 무료)
   const priceText = pickI18n(ev.priceText, locale);
@@ -82,7 +88,7 @@ export function EventDetail({
   const calUrl = useMemo(() => {
     if (!ev.startAt) return null;
     const toCal = (iso?: string) => {
-      const d = iso ? new Date(iso) : null;
+      const d = iso ? toKstDate(iso) : null;
       if (!d || Number.isNaN(d.getTime())) return '';
       return d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
     };
@@ -177,64 +183,73 @@ export function EventDetail({
         </nav>
       )}
 
-      {/* 메타 정보 + 신청 */}
-      <section className="container-wolf max-w-3xl py-8">
-        <dl className="divide-y divide-grey-100 rounded-xl border border-grey-200">
-          {dateText && (
-            <Row label={dict.event.date}>
-              <span>{dateText}</span>
-              {calUrl && (
-                <a
-                  href={calUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="ml-2 inline-flex items-center gap-1 text-sm text-primary hover:underline"
-                >
-                  <CalendarPlus size={14} /> {dict.event.addCalendar}
-                </a>
-              )}
-            </Row>
-          )}
-          {periodText && (
-            <Row label={dict.event.period}>
-              <span>{periodText}</span>
-              <span
-                className={`ml-2 rounded-pill px-2.5 py-0.5 text-xs font-medium ${
-                  applyOpen ? 'bg-success/10 text-success' : 'bg-grey-100 text-grey-500'
-                }`}
-              >
-                {applyOpen ? dict.event.open : dict.event.closed}
-              </span>
-            </Row>
-          )}
-          <Row label={dict.event.cost}>{costText || '—'}</Row>
-          {location && <Row label={dict.event.location}>{location}</Row>}
-        </dl>
+      {/* 본문(좌) + 우측 sticky 신청 사이드바 */}
+      <div className="container-wolf py-8">
+        <div className="grid gap-8 lg:grid-cols-[1fr_22rem] lg:items-start">
+          {/* 섹션 본문 (좌) */}
+          <div className="order-2 space-y-12 pb-12 lg:order-1">
+            {/* 미디어 갤러리 (유튜브·인스타·이미지·동영상) */}
+            <MediaGallery items={ev.media} />
+            {sections.map((s) => (
+              <section key={s.key} id={s.key} className="scroll-mt-24">
+                <h2 className="mb-4 border-l-4 border-primary pl-3 font-display text-2xl font-bold">
+                  {s.label}
+                </h2>
+                <div
+                  className="prose-wolf text-grey-800 [&_h3]:mt-6 [&_h3]:font-display [&_h3]:text-xl [&_img]:my-4 [&_img]:rounded-lg [&_li]:my-1 [&_p]:my-3 [&_p]:leading-relaxed [&_ul]:list-disc [&_ul]:pl-5"
+                  dangerouslySetInnerHTML={{ __html: s.html }}
+                />
+              </section>
+            ))}
+          </div>
 
-        {/* 데스크톱 신청 버튼 */}
-        <div className="mt-6 hidden md:block">
-          <AddToCartButton
-            item={cartItem}
-            label={soldout ? dict.event.soldout : dict.event.apply}
-            addedLabel={dict.product.added}
-            disabled={soldout || !applyOpen}
-          />
+          {/* 메타 정보 + 신청 (우, 스크롤 시 함께 이동하는 sticky) */}
+          <aside className="order-1 lg:order-2 lg:sticky lg:top-20">
+            <div className="space-y-4 rounded-xl border border-grey-200 p-4">
+              <dl className="divide-y divide-grey-100">
+                {dateText && (
+                  <Row label={dict.event.date}>
+                    <span>{dateText}</span>
+                    {calUrl && (
+                      <a
+                        href={calUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="ml-2 inline-flex items-center gap-1 text-sm text-primary hover:underline"
+                      >
+                        <CalendarPlus size={14} /> {dict.event.addCalendar}
+                      </a>
+                    )}
+                  </Row>
+                )}
+                {periodText && (
+                  <Row label={dict.event.period}>
+                    <span>{periodText}</span>
+                    <span
+                      className={`ml-2 rounded-pill px-2.5 py-0.5 text-xs font-medium ${
+                        applyOpen ? 'bg-success/10 text-success' : 'bg-grey-100 text-grey-500'
+                      }`}
+                    >
+                      {applyOpen ? dict.event.open : dict.event.closed}
+                    </span>
+                  </Row>
+                )}
+                <Row label={dict.event.cost}>{costText || '—'}</Row>
+                {location && <Row label={dict.event.location}>{location}</Row>}
+              </dl>
+
+              {/* 데스크톱 신청 버튼 */}
+              <div className="hidden md:block">
+                <AddToCartButton
+                  item={cartItem}
+                  label={soldout ? dict.event.soldout : dict.event.apply}
+                  addedLabel={dict.product.added}
+                  disabled={soldout || !applyOpen}
+                />
+              </div>
+            </div>
+          </aside>
         </div>
-      </section>
-
-      {/* 섹션 본문 */}
-      <div className="container-wolf max-w-3xl space-y-12 pb-12">
-        {sections.map((s) => (
-          <section key={s.key} id={s.key} className="scroll-mt-24">
-            <h2 className="mb-4 border-l-4 border-primary pl-3 font-display text-2xl font-bold">
-              {s.label}
-            </h2>
-            <div
-              className="prose-wolf text-grey-800 [&_h3]:mt-6 [&_h3]:font-display [&_h3]:text-xl [&_img]:my-4 [&_img]:rounded-lg [&_li]:my-1 [&_p]:my-3 [&_p]:leading-relaxed [&_ul]:list-disc [&_ul]:pl-5"
-              dangerouslySetInnerHTML={{ __html: s.html }}
-            />
-          </section>
-        ))}
       </div>
 
       {/* 모바일 고정 신청 바 */}
