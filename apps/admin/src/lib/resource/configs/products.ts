@@ -68,6 +68,7 @@ export const productsConfig: ResourceConfig<ProductRow> = {
     { name: 'prices', label: '가격', kind: 'prices' },
     { name: 'attributes', label: '속성(JSON)', kind: 'json', placeholder: '{"size":["S","M"]}' },
     { name: 'detail_html_i18n', label: '상세 HTML (AI 생성)', kind: 'custom' }, // AiProductGenerator
+    { name: 'event_content', label: '이벤트 콘텐츠 (티켓)', kind: 'custom' }, // EventEditor (티켓 전용)
     { name: 'status', label: '상태', kind: 'select', options: STATUS_OPTS, required: true },
   ],
   // G2: 보안 검증 (Design §7) — 가격 정수≥0, 상태/타입 enum

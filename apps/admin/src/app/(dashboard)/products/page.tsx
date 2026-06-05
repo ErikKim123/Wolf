@@ -14,7 +14,8 @@ import {
 } from '@/lib/resource/configs/products';
 import type { FieldDef } from '@/lib/resource/types';
 import { AiProductGenerator } from '@/components/product/AiProductGenerator';
-import type { I18n } from '@wolf/shared';
+import { EventEditor } from '@/components/product/EventEditor';
+import type { EventContent, I18n } from '@wolf/shared';
 
 function ProductActions({ row }: { row: ProductRow }) {
   const transition = useStatusTransition('products', 'products');
@@ -68,6 +69,18 @@ export default function ProductsPage() {
           <AiProductGenerator
             value={value as I18n | undefined}
             set={set as (v: I18n) => void}
+            allValues={allValues}
+          />
+        </div>
+      );
+    }
+    if (field.name === 'event_content') {
+      return (
+        <div className="space-y-1.5">
+          <label className="label-caps">{field.label}</label>
+          <EventEditor
+            value={value as EventContent | undefined}
+            set={set as (v: EventContent) => void}
             allValues={allValues}
           />
         </div>

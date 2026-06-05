@@ -108,5 +108,26 @@
   "footer": {
     "rights": "All rights reserved.",
     "tagline": "Partner marketplace — gear, tickets & subscriptions."
+  },
+  "event": {
+    "apply": "Apply",
+    "soldout": "Closed",
+    "date": "Date",
+    "period": "Registration",
+    "cost": "Cost",
+    "location": "Location",
+    "free": "Free",
+    "open": "Open",
+    "closed": "Closed",
+    "addCalendar": "Add to Google Calendar",
+    "menu": {
+      "about": "About",
+      "venue": "Venue",
+      "notice": "Notice",
+      "contact": "Contact",
+      "channel": "Channel",
+      "recommend": "Recommended",
+      "refund": "Cancellation / Refund"
+    }
   }
 }

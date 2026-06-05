@@ -84,6 +84,33 @@ export interface Product {
   updatedAt: string;
 }
 
+// ── 이벤트(티켓) 페이지 템플릿 ──────────────────────────────
+/** 이벤트 앵커 메뉴 = 섹션 키 (렌더/메뉴 순서). 콘텐츠 있는 것만 노출 */
+export const EVENT_SECTION_KEYS = [
+  'about',
+  'venue',
+  'notice',
+  'contact',
+  'channel',
+  'recommend',
+  'refund',
+] as const;
+export type EventSectionKey = (typeof EVENT_SECTION_KEYS)[number];
+
+/** 티켓 상품의 이벤트 페이지 콘텐츠(products.event_content). 모든 텍스트는 i18n. */
+export interface EventContent {
+  banner?: I18n; // 히어로 배너 이미지 URL (locale별)
+  badge?: I18n; // 상단 배지 텍스트 (예: "전문가와 함께하는 …")
+  subtitle?: I18n; // 부제 (예: "조직 생존을 위한 …")
+  startAt?: string; // 일시 시작 (ISO, datetime-local)
+  endAt?: string; // 일시 종료
+  applyStart?: string; // 신청 시작
+  applyEnd?: string; // 신청 종료
+  priceText?: I18n; // 비용 표기 (비우면 상품가격/무료 자동)
+  location?: I18n; // 장소
+  sections?: Partial<Record<EventSectionKey, I18n>>; // 섹션별 i18n HTML
+}
+
 export interface Order {
   id: string;
   orderNo: string;
