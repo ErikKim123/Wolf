@@ -28,6 +28,13 @@
   /* 라벨/배지 — ALL CAPS, tight */
   .label-caps { @apply text-[12px] font-medium uppercase tracking-tight text-grey-500; }
 
+  /* 폼 인풋 — 전체폭(블록) → 라벨은 자동으로 위 줄에. 흰 카드 위 grey-100 fill, focus ring */
+  .input {
+    @apply block w-full rounded-lg border border-grey-300 bg-grey-100 px-4 py-3 text-base
+           text-black placeholder:text-grey-500 transition-colors duration-200
+           focus:border-black focus:bg-white focus:outline-none focus:shadow-focus;
+  }
+
   /* 고객몰: 콘텐츠 컨테이너 (반응형 가운데 정렬) */
   .container-wolf { @apply mx-auto w-full max-w-[1280px] px-4 sm:px-6 lg:px-8; }
 
