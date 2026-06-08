@@ -11,9 +11,15 @@ interface MemberRow {
   created_at: string;
 }
 
+// 폼(권한 변경)용 — 전체 역할
 const ROLE_OPTS = [
   { value: 'customer', label: '일반회원' },
   { value: 'partner', label: '파트너' },
+  { value: 'admin', label: '관리자' },
+];
+// 필터용 — 회원관리는 파트너 제외(파트너는 파트너관리에서 관리)
+const FILTER_ROLE_OPTS = [
+  { value: 'customer', label: '일반회원' },
   { value: 'admin', label: '관리자' },
 ];
 const LOCALE_OPTS = [
@@ -34,14 +40,16 @@ const columns: ColumnDef<MemberRow, unknown>[] = [
 export const membersConfig: ResourceConfig<MemberRow> = {
   key: 'members',
   table: 'profiles',
-  title: '회원관리',
+  title: '일반회원 관리',
   canCreate: false, // 가입은 Auth 경유 — 어드민은 수정만
+  // 파트너 회원은 제외 — 파트너는 '파트너관리'에서 분리 관리
+  baseFilter: { column: 'role', op: 'neq', value: 'partner' },
   selectColumns: 'id, email, role, name, locale, created_at',
   defaultSort: { column: 'created_at', asc: false },
   listColumns: columns,
   filters: [
     { name: 'q', label: '이메일/이름 검색', kind: 'search', searchColumns: ['email', 'name'] },
-    { name: 'role', label: '권한', kind: 'select', options: ROLE_OPTS },
+    { name: 'role', label: '권한', kind: 'select', options: FILTER_ROLE_OPTS },
     { name: 'locale', label: '언어', kind: 'select', options: LOCALE_OPTS },
   ],
   formFields: [

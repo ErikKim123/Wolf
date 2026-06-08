@@ -14,8 +14,8 @@ import { cn } from '@/lib/utils';
 // Design Ref: §1.1 가이드 9개 관리 메뉴 (Phase 1 전체 활성화). disabled 는 후속 메뉴용 옵션.
 const NAV: { href: string; label: string; icon: LucideIcon; disabled?: boolean }[] = [
   { href: '/dashboard', label: '대시보드', icon: LayoutDashboard },
-  { href: '/members', label: '회원관리', icon: Users },
-  { href: '/partners', label: '파트너관리', icon: Store },
+  { href: '/members', label: '일반회원', icon: Users },
+  { href: '/partners', label: '파트너회원', icon: Store },
   { href: '/products', label: '상품관리', icon: Package },
   { href: '/event-passes', label: '행사패스관리', icon: TicketCheck },
   { href: '/categories', label: '카테고리관리', icon: FolderTree },

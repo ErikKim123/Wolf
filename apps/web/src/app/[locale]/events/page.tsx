@@ -3,6 +3,7 @@ import type { Locale } from '@wolf/shared';
 import { getDictionary } from '@/i18n/dictionaries';
 import { listEvents } from '@/lib/queries/events';
 import { EventCalendar } from '@/components/product/EventCalendar';
+import { NewsletterForm } from '@/components/marketing/NewsletterForm';
 
 export const dynamic = 'force-dynamic';
 
@@ -17,6 +18,9 @@ export default async function EventsPage({ params }: { params: { locale: string 
     <div className="container-wolf py-8">
       <h1 className="section-title mb-6">{dict.events.title}</h1>
       <EventCalendar events={events} locale={locale} dict={dict} initialKey={todayKey} />
+      <div className="mt-10">
+        <NewsletterForm locale={locale} dict={dict} />
+      </div>
     </div>
   );
 }

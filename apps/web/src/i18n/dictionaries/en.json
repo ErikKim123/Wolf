@@ -161,5 +161,13 @@
     "today": "Today",
     "count": "{n} events",
     "none": "No events on the selected date."
+  },
+  "newsletter": {
+    "title": "Subscribe to our newsletter",
+    "desc": "Get the latest events and festival passes in your inbox.",
+    "placeholder": "Enter your email",
+    "button": "Subscribe",
+    "success": "Thanks for subscribing!",
+    "error": "Something went wrong. Please try again."
   }
 }

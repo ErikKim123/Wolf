@@ -43,7 +43,7 @@ const columns: ColumnDef<PartnerRow, unknown>[] = [
 export const partnersConfig: ResourceConfig<PartnerRow> = {
   key: 'partners',
   table: 'partners',
-  title: '파트너관리',
+  title: '파트너회원 관리',
   canCreate: false, // 입점 신청은 가입 흐름, 어드민은 승인/편집
   selectColumns: 'id, user_id, company_name, country, biz_no, commission_rate, status, created_at',
   defaultSort: { column: 'created_at', asc: false },
