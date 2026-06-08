@@ -29,9 +29,14 @@ export function ResourceFormPage<T extends { id?: string }>({
   const upsert = useResourceUpsert<T>(config);
 
   useEffect(() => {
-    setValues((initial as Record<string, unknown>) ?? {});
+    // 수정: 기존 행 그대로 / 신규(initial null): config.createDefaults 주입
+    setValues(
+      initial
+        ? (initial as Record<string, unknown>)
+        : { ...(config.createDefaults ?? {}) },
+    );
     setJsonErrors({});
-  }, [initial]);
+  }, [initial, config.createDefaults]);
 
   const set = (name: string, v: unknown) => setValues((p) => ({ ...p, [name]: v }));
   const setJsonError = (name: string, bad: boolean) =>

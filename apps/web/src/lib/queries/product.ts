@@ -11,6 +11,7 @@ export interface ProductDetail {
   category_id: string | null;
   name_i18n: I18n;
   prices: Prices;
+  image_url: string | null;
   attributes: Record<string, unknown> | null;
   detail_html_i18n: I18n;
   event_content: EventContent | null;
@@ -22,7 +23,7 @@ export async function getProduct(id: string): Promise<ProductDetail | null> {
   const { data, error } = await createClient()
     .from('products')
     .select(
-      'id, code, seller_id, product_type, is_partner_product, category_id, name_i18n, prices, attributes, detail_html_i18n, event_content, status',
+      'id, code, seller_id, product_type, is_partner_product, category_id, name_i18n, prices, image_url, attributes, detail_html_i18n, event_content, status',
     )
     .eq('id', id)
     .maybeSingle();

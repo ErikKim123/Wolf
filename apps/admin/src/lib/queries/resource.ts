@@ -25,6 +25,11 @@ export function useResourceList<T>(config: ResourceConfig<T>, params: ListParams
         .from(config.table)
         .select(config.selectColumns ?? '*', { count: 'exact' });
 
+      // 고정 필터 (config.baseFilter) — 항상 적용 (예: 행사패스 = product_type ticket)
+      if (config.baseFilter) {
+        const { column, op, value } = config.baseFilter;
+        q = op === 'neq' ? q.neq(column, value) : q.eq(column, value);
+      }
       // eq 필터
       for (const [col, val] of Object.entries(params.filters ?? {})) {
         if (val) q = q.eq(col, val);

@@ -18,8 +18,8 @@ import {
 } from '@/lib/resource/configs/products';
 import type { FieldDef } from '@/lib/resource/types';
 import { AiProductGenerator } from '@/components/product/AiProductGenerator';
-import { EventEditor } from '@/components/product/EventEditor';
-import { pickI18n, type EventContent, type I18n } from '@wolf/shared';
+import { ProductImageField } from '@/components/product/ProductImageField';
+import { pickI18n, type I18n } from '@wolf/shared';
 
 function ProductActions({ row }: { row: ProductRow }) {
   const transition = useStatusTransition('products', 'products');
@@ -80,6 +80,18 @@ export default function ProductsPage() {
         </div>
       );
     }
+    if (field.name === 'image_url') {
+      return (
+        <div className="space-y-1.5">
+          <label className="label-caps">{field.label}</label>
+          <ProductImageField
+            value={value as string | undefined}
+            set={set as (v: string | null) => void}
+            allValues={allValues}
+          />
+        </div>
+      );
+    }
     if (field.name === 'detail_html_i18n') {
       return (
         <div className="space-y-1.5">
@@ -87,18 +99,6 @@ export default function ProductsPage() {
           <AiProductGenerator
             value={value as I18n | undefined}
             set={set as (v: I18n) => void}
-            allValues={allValues}
-          />
-        </div>
-      );
-    }
-    if (field.name === 'event_content') {
-      return (
-        <div className="space-y-1.5">
-          <label className="label-caps">{field.label}</label>
-          <EventEditor
-            value={value as EventContent | undefined}
-            set={set as (v: EventContent) => void}
             allValues={allValues}
           />
         </div>

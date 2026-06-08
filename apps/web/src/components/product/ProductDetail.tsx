@@ -1,4 +1,5 @@
 // Design Ref: §5 Phase 3 — 상품 상세 (기본정보 + 옵션 + sanitize 된 상세 HTML)
+import Image from 'next/image';
 import { Package } from 'lucide-react';
 import { pickI18n, formatPrice, type Locale } from '@wolf/shared';
 import { currencyForLocale, intlLocale } from '@/lib/locale';
@@ -27,9 +28,20 @@ export function ProductDetail({
   return (
     <article className="container-wolf py-8 md:py-12">
       <div className="grid gap-8 md:grid-cols-2">
-        {/* 비주얼 (이미지 placeholder) */}
-        <div className="flex aspect-square items-center justify-center rounded-xl bg-grey-100">
-          <Package size={72} className="text-grey-300" aria-hidden />
+        {/* 비주얼 (대표 이미지 또는 placeholder) */}
+        <div className="relative flex aspect-square items-center justify-center overflow-hidden rounded-xl bg-grey-100">
+          {product.image_url ? (
+            <Image
+              src={product.image_url}
+              alt={name || ''}
+              fill
+              sizes="(max-width: 768px) 100vw, 50vw"
+              className="object-cover"
+              priority
+            />
+          ) : (
+            <Package size={72} className="text-grey-300" aria-hidden />
+          )}
         </div>
 
         {/* 기본정보 */}

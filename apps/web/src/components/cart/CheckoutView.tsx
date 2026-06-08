@@ -1,42 +1,35 @@
-// Design Ref: §5 Phase 4 — 체크아웃 (주문 생성: orders + order_items, seller 분리 = 파트너 정산 근거)
+// Design Ref: §5 Phase 4 — 체크아웃 (서버 결제 시작 → Stripe 리다이렉트 / PortOne SDK).
+// 주문 생성·금액계산·쿠폰차감은 전부 서버(/api/payments/checkout)가 수행. 여기선 장바구니→결제 트리거만.
 'use client';
 import { useState } from 'react';
 import Link from 'next/link';
-import { CheckCircle2 } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
 import { pickI18n, pickPrice, toDisplayAmount, type Currency, type Locale } from '@wolf/shared';
 import { currencyForLocale, intlLocale } from '@/lib/locale';
-import { createClient } from '@/lib/supabase/client';
 import { useCart } from '@/lib/cart/CartContext';
 import { validateCoupon } from '@/lib/coupon';
 import type { Dictionary } from '@/i18n/dictionaries';
-
-function makeOrderNo(): string {
-  const d = new Date();
-  const ymd = `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, '0')}${String(
-    d.getDate(),
-  ).padStart(2, '0')}`;
-  // 시분초 + 3자리 난수 → order_no unique 충돌 사실상 제거
-  const hms = `${String(d.getHours()).padStart(2, '0')}${String(d.getMinutes()).padStart(2, '0')}${String(
-    d.getSeconds(),
-  ).padStart(2, '0')}`;
-  const rand = Math.floor(Math.random() * 900 + 100);
-  return `ORD-${ymd}-${hms}${rand}`;
-}
 
 export function CheckoutView({
   locale,
   dict,
   userId,
+  paymentEnabled,
 }: {
   locale: Locale;
   dict: Dictionary;
   userId: string;
+  paymentEnabled: boolean;
 }) {
+  // userId 는 서버 가드용으로 받지만 결제 본인확인은 서버가 세션으로 재확인한다.
+  void userId;
   const { items, clear } = useCart();
   const currency = currencyForLocale(locale) as Currency;
+  const search = useSearchParams();
   const [placing, setPlacing] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [orderNo, setOrderNo] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(
+    search.get('canceled') ? dict.cart.canceled : null,
+  );
 
   const fmt = (minor: number) =>
     new Intl.NumberFormat(intlLocale(locale), {
@@ -67,72 +60,72 @@ export function CheckoutView({
     }
   }
 
-  async function placeOrder() {
+  async function pay() {
     setError(null);
     setPlacing(true);
     try {
-      const supabase = createClient();
-      const no = makeOrderNo();
-      const { data: order, error: oerr } = await supabase
-        .from('orders')
-        .insert({
-          order_no: no,
-          buyer_id: userId,
-          status: 'pending',
-          total_amount: finalMinor,
-          currency,
-          payment_method: null,
-          coupon_code: applied?.code ?? null,
-          discount_amount: discountMinor,
-        })
-        .select('id')
-        .single();
-      if (oerr) throw oerr;
-
-      // 주문항목 — seller_id 분리 저장(정산 근거)
-      const rows = items.map((i) => {
-        const unit = pickPrice(i.prices, currency) ?? 0;
-        return {
-          order_id: order.id,
-          product_id: i.id,
-          seller_id: i.seller_id,
-          qty: i.qty,
-          unit_price: unit,
-          line_amount: unit * i.qty,
-          currency,
-        };
+      const res = await fetch('/api/payments/checkout', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          items: items.map((i) => ({ id: i.id, qty: i.qty })),
+          couponCode: applied?.code ?? null,
+          locale,
+        }),
       });
-      const { error: ierr } = await supabase.from('order_items').insert(rows);
-      if (ierr) throw ierr;
 
-      // 쿠폰 사용 횟수 원자적 증가(RLS 우회 RPC). 주문은 이미 생성됐으므로 실패해도 주문은 유지.
-      if (applied?.code) {
-        await supabase.rpc('redeem_coupon', { p_code: applied.code });
+      if (!res.ok) {
+        setError(res.status === 503 ? dict.cart.payDisabled : dict.cart.payFailed);
+        return;
+      }
+      const data = await res.json();
+
+      // Stripe / 0원주문 → 호스티드 페이지 또는 완료 페이지로 이동 (장바구니는 완료 페이지에서 비움)
+      if (data.kind === 'stripe' || data.kind === 'free') {
+        window.location.href = data.url ?? data.redirectUrl;
+        return;
       }
 
-      clear();
-      setOrderNo(no);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'Failed');
+      // PortOne → 브라우저 SDK 결제창
+      if (data.kind === 'portone') {
+        const PortOne = await import('@portone/browser-sdk/v2');
+        const response = await PortOne.requestPayment({
+          storeId: data.storeId,
+          channelKey: data.channelKey,
+          paymentId: data.paymentId,
+          orderName: data.orderName,
+          totalAmount: data.amount,
+          currency: 'CURRENCY_KRW',
+          payMethod: 'CARD',
+          redirectUrl: data.redirectUrl,
+        });
+        // 모바일은 redirectUrl 로 페이지 전환되어 여기 도달 안 함. 데스크톱 팝업만 응답 반환.
+        if (response?.code != null) {
+          setError(response.message || dict.cart.payFailed);
+          return;
+        }
+        // 서버 검증으로 확정
+        const comp = await fetch('/api/payments/portone/complete', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ orderId: data.orderId, paymentId: data.paymentId }),
+        });
+        const cdata = await comp.json().catch(() => ({}));
+        if (!comp.ok || !cdata.ok) {
+          setError(dict.cart.payFailed);
+          return;
+        }
+        clear();
+        window.location.href = `/${locale}/checkout/success?order=${data.orderNo}`;
+        return;
+      }
+
+      setError(dict.cart.payFailed);
+    } catch {
+      setError(dict.cart.payFailed);
     } finally {
       setPlacing(false);
     }
-  }
-
-  // 주문 완료
-  if (orderNo) {
-    return (
-      <div className="container-wolf flex min-h-[50vh] flex-col items-center justify-center gap-4 text-center">
-        <CheckCircle2 size={56} className="text-success" />
-        <h1 className="section-title">{dict.cart.orderComplete}</h1>
-        <p className="text-grey-500">
-          {dict.cart.orderNo}: <span className="font-medium text-black">{orderNo}</span>
-        </p>
-        <Link href={`/${locale}`} className="btn btn-secondary btn-sm">
-          {dict.cart.continue}
-        </Link>
-      </div>
-    );
   }
 
   if (items.length === 0) {
@@ -200,12 +193,15 @@ export function CheckoutView({
 
       <button
         type="button"
-        onClick={placeOrder}
-        disabled={placing}
+        onClick={pay}
+        disabled={placing || !paymentEnabled}
         className="btn btn-primary mt-6 w-full"
       >
-        {placing ? '…' : dict.cart.checkout}
+        {placing ? dict.cart.paying : dict.cart.pay}
       </button>
+      {!paymentEnabled && (
+        <p className="mt-2 text-center text-sm text-grey-500">{dict.cart.payDisabled}</p>
+      )}
     </div>
   );
 }

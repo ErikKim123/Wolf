@@ -1,5 +1,6 @@
 // Design Ref: Design_System/components-product-cards — 상품 카드 (이미지 placeholder + 명/가/배지)
 import Link from 'next/link';
+import Image from 'next/image';
 import { Package } from 'lucide-react';
 import { pickI18n, formatPrice, type Locale } from '@wolf/shared';
 import { currencyForLocale, intlLocale } from '@/lib/locale';
@@ -21,8 +22,18 @@ export function ProductCard({
 
   return (
     <Link href={`/${locale}/products/${product.id}`} className="product-card">
-      <div className="flex aspect-square items-center justify-center bg-grey-100">
-        <Package size={40} className="text-grey-300" aria-hidden />
+      <div className="relative flex aspect-square items-center justify-center overflow-hidden bg-grey-100">
+        {product.image_url ? (
+          <Image
+            src={product.image_url}
+            alt={name || ''}
+            fill
+            sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            className="object-cover"
+          />
+        ) : (
+          <Package size={40} className="text-grey-300" aria-hidden />
+        )}
       </div>
       <div className="flex flex-1 flex-col gap-1 p-3">
         <span className="label-caps text-grey-400">{badge}</span>

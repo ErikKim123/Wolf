@@ -38,6 +38,10 @@ export interface ResourceConfig<T = Record<string, unknown>> {
   pageSize?: number;
   /** 생성 허용 여부 (예: members는 읽기/수정만) */
   canCreate?: boolean;
+  /** 항상 적용되는 고정 필터 (예: 행사패스관리 = product_type eq 'ticket'). 사용자 필터와 별개. */
+  baseFilter?: { column: string; op: 'eq' | 'neq'; value: string };
+  /** 생성(신규) 시 폼 초기값으로 주입 (예: 행사패스 = product_type 'ticket'). 수정 시에는 무시. */
+  createDefaults?: Record<string, unknown>;
   /** 제출 전 zod 검증 (부분 입력 허용 위해 .partial() 권장). Design §7 보안 검증. */
   schema?: ZodTypeAny;
 }

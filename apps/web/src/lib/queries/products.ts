@@ -14,7 +14,7 @@ export interface ListOptions {
 export async function listProducts(opts: ListOptions = {}): Promise<HomeProduct[]> {
   let q = createClient()
     .from('products')
-    .select('id, code, product_type, is_partner_product, category_id, name_i18n, prices, status')
+    .select('id, code, product_type, is_partner_product, category_id, name_i18n, prices, image_url, status')
     .eq('status', 'active');
   if (opts.categoryId) q = q.eq('category_id', opts.categoryId);
   if (opts.productType) q = q.eq('product_type', opts.productType);

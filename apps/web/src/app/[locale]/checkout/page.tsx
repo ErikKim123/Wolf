@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 import type { Locale } from '@wolf/shared';
 import { getDictionary } from '@/i18n/dictionaries';
 import { createClient } from '@/lib/supabase/server';
+import { isProviderConfigured, providerForLocale } from '@/lib/payments/config';
 import { CheckoutView } from '@/components/cart/CheckoutView';
 
 export const dynamic = 'force-dynamic';
@@ -17,5 +18,9 @@ export default async function CheckoutPage({ params }: { params: { locale: strin
   } = await supabase.auth.getUser();
   if (!user) redirect(`/${locale}/login?next=checkout`);
 
-  return <CheckoutView locale={locale} dict={dict} userId={user.id} />;
+  const paymentEnabled = isProviderConfigured(providerForLocale(locale));
+
+  return (
+    <CheckoutView locale={locale} dict={dict} userId={user.id} paymentEnabled={paymentEnabled} />
+  );
 }

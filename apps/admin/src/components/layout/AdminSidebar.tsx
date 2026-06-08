@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import {
-  LayoutDashboard, Users, Store, Package, FolderTree, ShoppingCart, Truck,
+  LayoutDashboard, Users, Store, Package, TicketCheck, FolderTree, ShoppingCart, Truck,
   MessageSquare, Image, LayoutGrid, Ticket, Menu, X, LogOut,
   type LucideIcon,
 } from 'lucide-react';
@@ -17,6 +17,7 @@ const NAV: { href: string; label: string; icon: LucideIcon; disabled?: boolean }
   { href: '/members', label: '회원관리', icon: Users },
   { href: '/partners', label: '파트너관리', icon: Store },
   { href: '/products', label: '상품관리', icon: Package },
+  { href: '/event-passes', label: '행사패스관리', icon: TicketCheck },
   { href: '/categories', label: '카테고리관리', icon: FolderTree },
   { href: '/orders', label: '주문관리', icon: ShoppingCart },
   { href: '/shipments', label: '배송관리', icon: Truck },

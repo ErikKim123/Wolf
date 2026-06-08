@@ -14,12 +14,13 @@ export interface ProductRow {
   category_id: string | null;
   name_i18n: I18n;
   prices: Prices;
+  image_url: string | null;
   status: string;
 }
 
+// 행사패스(ticket)는 별도 '행사패스관리'에서 관리 — 상품관리는 실물/구독만.
 const TYPE_OPTS = [
   { value: 'physical', label: '실물' },
-  { value: 'ticket', label: '티켓' },
   { value: 'subscription', label: '구독' },
 ];
 const STATUS_OPTS = [
@@ -51,8 +52,11 @@ export const productsConfig: ResourceConfig<ProductRow> = {
   table: 'products',
   title: '상품관리',
   canCreate: true,
+  // 행사패스(ticket) 제외 — 실물/구독만 (행사패스는 /event-passes 에서 관리)
+  baseFilter: { column: 'product_type', op: 'neq', value: 'ticket' },
+  createDefaults: { product_type: 'physical', status: 'draft' },
   // Plan FR-10: 목록 select 에서 detail_html_i18n 제외 (성능)
-  selectColumns: 'id, code, seller_id, is_partner_product, product_type, category_id, name_i18n, prices, status',
+  selectColumns: 'id, code, seller_id, is_partner_product, product_type, category_id, name_i18n, prices, image_url, status',
   defaultSort: { column: 'created_at', asc: false },
   listColumns: columns,
   filters: [
@@ -63,12 +67,12 @@ export const productsConfig: ResourceConfig<ProductRow> = {
   formFields: [
     { name: 'code', label: '상품코드', kind: 'text' },
     { name: 'name_i18n', label: '상품명', kind: 'i18n', required: true },
+    { name: 'image_url', label: '대표 이미지(썸네일)', kind: 'custom' }, // ProductImageField
     { name: 'product_type', label: '타입', kind: 'select', options: TYPE_OPTS, required: true },
     { name: 'category_id', label: '카테고리', kind: 'custom' }, // useCategoryOptions 주입
     { name: 'prices', label: '가격', kind: 'prices' },
     { name: 'attributes', label: '속성(JSON)', kind: 'json', placeholder: '{"size":["S","M"]}' },
     { name: 'detail_html_i18n', label: '상세 HTML (AI 생성)', kind: 'custom' }, // AiProductGenerator
-    { name: 'event_content', label: '이벤트 콘텐츠 (티켓)', kind: 'custom' }, // EventEditor (티켓 전용)
     { name: 'status', label: '상태', kind: 'select', options: STATUS_OPTS, required: true },
   ],
   // G2: 보안 검증 (Design §7) — 가격 정수≥0, 상태/타입 enum

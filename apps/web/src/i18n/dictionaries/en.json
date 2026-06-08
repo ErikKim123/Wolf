@@ -6,7 +6,7 @@
   "nav": {
     "shop": "Shop",
     "calendar": "Event Calendar",
-    "tickets": "Tickets",
+    "tickets": "Festival Passes",
     "subscription": "Subscription",
     "boards": "Support"
   },
@@ -55,7 +55,13 @@
     "subtotal": "Subtotal",
     "couponInvalid": "Invalid or expired coupon.",
     "couponMin": "Order total is below this coupon's minimum.",
-    "couponApplied": "Coupon applied"
+    "couponApplied": "Coupon applied",
+    "pay": "Pay",
+    "paying": "Processing payment…",
+    "payFailed": "Payment failed. Please try again.",
+    "canceled": "Payment was canceled.",
+    "payDisabled": "Payments are not available yet.",
+    "verifying": "Verifying your payment…"
   },
   "orders": {
     "title": "My Orders",
@@ -104,7 +110,25 @@
     "toLogin": "Already have an account? Sign in",
     "confirmSent": "Check your email to confirm your account, then sign in.",
     "account": "Account",
-    "logout": "Sign out"
+    "logout": "Sign out",
+    "accountType": "Account type",
+    "regularUser": "Regular user",
+    "regularUserHint": "Buy products & event passes",
+    "partner": "Partner",
+    "partnerHint": "List & sell products and event passes",
+    "companyName": "Company name",
+    "bizNo": "Business reg. no. (optional)",
+    "orContinue": "Or",
+    "googleLogin": "Continue with Google",
+    "kakaoLogin": "Continue with KakaoTalk",
+    "whatsappLogin": "Continue with WhatsApp",
+    "phone": "Phone number",
+    "phoneHint": "Include country code (e.g. +14155551234)",
+    "sendCode": "Send code",
+    "otpCode": "Verification code",
+    "verifyCode": "Verify",
+    "codeSent": "We sent a verification code via WhatsApp.",
+    "partnerPending": "Your partner application was received. After admin approval you can list products and event passes."
   },
   "footer": {
     "rights": "All rights reserved.",

@@ -26,6 +26,7 @@ export interface HomeProduct {
   category_id: string | null;
   name_i18n: I18n;
   prices: Prices;
+  image_url: string | null;
   status: string;
 }
 
@@ -65,7 +66,7 @@ export async function getActiveBanners(): Promise<Banner[]> {
 export async function getFeaturedProducts(limit = 8): Promise<HomeProduct[]> {
   const { data, error } = await createClient()
     .from('products')
-    .select('id, code, product_type, is_partner_product, category_id, name_i18n, prices, status')
+    .select('id, code, product_type, is_partner_product, category_id, name_i18n, prices, image_url, status')
     .eq('status', 'active')
     .order('created_at', { ascending: false })
     .limit(limit);

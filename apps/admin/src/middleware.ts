@@ -45,7 +45,10 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(url);
     }
     // 인증됨 + 로그인 페이지 → 대시보드
-    if (user && isLogin) {
+    // 단, ?error 가 붙은 경우(예: layout 의 role 가드가 forbidden 으로 되돌림)는
+    // 그대로 /login 을 렌더해 안내 메시지를 보여준다. 안 그러면 layout↔middleware
+    // 가 무한 리다이렉트(ERR_TOO_MANY_REDIRECTS)에 빠진다.
+    if (user && isLogin && !request.nextUrl.searchParams.has('error')) {
       const url = request.nextUrl.clone();
       url.pathname = '/dashboard';
       return NextResponse.redirect(url);
