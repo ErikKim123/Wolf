@@ -8,6 +8,7 @@ export interface PartnerRow {
   id: string;
   user_id: string;
   company_name: string | null;
+  country: string | null;
   biz_no: string | null;
   commission_rate: number;
   status: string;
@@ -32,6 +33,7 @@ export const PARTNER_TRANSITIONS: Record<string, { to: string; label: string }[]
 
 const columns: ColumnDef<PartnerRow, unknown>[] = [
   { accessorKey: 'company_name', header: '회사명' },
+  { accessorKey: 'country', header: '국가', cell: (c) => String(c.getValue() ?? '—') },
   { accessorKey: 'biz_no', header: '사업자번호' },
   { accessorKey: 'commission_rate', header: '수수료율', cell: (c) => `${(Number(c.getValue()) * 100).toFixed(1)}%` },
   { accessorKey: 'status', header: '상태', cell: (c) => StatusBadge({ status: String(c.getValue()) }) },
@@ -43,7 +45,7 @@ export const partnersConfig: ResourceConfig<PartnerRow> = {
   table: 'partners',
   title: '파트너관리',
   canCreate: false, // 입점 신청은 가입 흐름, 어드민은 승인/편집
-  selectColumns: 'id, user_id, company_name, biz_no, commission_rate, status, created_at',
+  selectColumns: 'id, user_id, company_name, country, biz_no, commission_rate, status, created_at',
   defaultSort: { column: 'created_at', asc: false },
   listColumns: columns,
   filters: [
@@ -52,6 +54,7 @@ export const partnersConfig: ResourceConfig<PartnerRow> = {
   ],
   formFields: [
     { name: 'company_name', label: '회사명', kind: 'text', required: true },
+    { name: 'country', label: '국가', kind: 'text' },
     { name: 'biz_no', label: '사업자번호', kind: 'text' },
     { name: 'commission_rate', label: '수수료율 (0~1, 예 0.15)', kind: 'number', required: true },
   ],

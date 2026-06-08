@@ -117,6 +117,7 @@
     "partner": "Partner",
     "partnerHint": "List & sell products and event passes",
     "companyName": "Company name",
+    "country": "Country",
     "bizNo": "Business reg. no. (optional)",
     "orContinue": "Or",
     "googleLogin": "Continue with Google",

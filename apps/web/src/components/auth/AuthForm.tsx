@@ -47,6 +47,7 @@ async function ensureProfile(supabase: SupabaseClient, user: User, locale: Local
       await supabase.from('partners').insert({
         user_id: user.id,
         company_name: (meta.company_name as string | undefined) || null,
+        country: (meta.country as string | undefined) || null,
         biz_no: (meta.biz_no as string | undefined) || null,
         status: 'pending',
       });
@@ -70,6 +71,7 @@ export function AuthForm({
   const [name, setName] = useState('');
   const [accountType, setAccountType] = useState<AccountType>('customer');
   const [companyName, setCompanyName] = useState('');
+  const [country, setCountry] = useState('');
   const [bizNo, setBizNo] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
@@ -160,6 +162,7 @@ export function AuthForm({
               name: name || null,
               account_type: accountType,
               company_name: accountType === 'partner' ? companyName || null : null,
+              country: accountType === 'partner' ? country || null : null,
               biz_no: accountType === 'partner' ? bizNo || null : null,
             },
           },
@@ -231,6 +234,10 @@ export function AuthForm({
                 <div className="space-y-1.5">
                   <label className="label-caps">{dict.auth.companyName}</label>
                   <input className="input" value={companyName} onChange={(e) => setCompanyName(e.target.value)} />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="label-caps">{dict.auth.country}</label>
+                  <input className="input" value={country} onChange={(e) => setCountry(e.target.value)} />
                 </div>
                 <div className="space-y-1.5">
                   <label className="label-caps">{dict.auth.bizNo}</label>
