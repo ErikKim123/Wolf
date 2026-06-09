@@ -1,12 +1,12 @@
 {
-  "name": "@wolf/admin",
+  "name": "@wolf/partner",
   "version": "0.1.0",
   "private": true,
-  "description": "운영자 관리 페이지 (Next.js, role=admin) — Phase 1",
+  "description": "파트너 입점 관리 페이지 (Next.js, role=partner) — 자기 상품/판매/정산",
   "scripts": {
-    "dev": "next dev -p 3001",
+    "dev": "next dev -p 3002",
     "build": "next build",
-    "start": "next start -p 3001",
+    "start": "next start -p 3002",
     "lint": "next lint",
     "typecheck": "tsc --noEmit"
   },
@@ -24,8 +24,7 @@
     "clsx": "^2.1.1",
     "tailwind-merge": "^2.5.2",
     "class-variance-authority": "^0.7.0",
-    "lucide-react": "^0.439.0",
-    "pg": "^8.13.0"
+    "lucide-react": "^0.439.0"
   },
   "devDependencies": {
     "typescript": "^5.5.0",

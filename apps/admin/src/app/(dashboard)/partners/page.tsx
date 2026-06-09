@@ -6,6 +6,7 @@ import { ResourceListPage } from '@/components/resource/ResourceListPage';
 import { ResourceFormPage } from '@/components/resource/ResourceFormPage';
 import { FormDrawer } from '@/components/resource/FormDrawer';
 import { useStatusTransition } from '@/lib/queries/resource';
+import { CreatePartnerForm } from '@/components/partner/CreatePartnerForm';
 import {
   partnersConfig,
   PARTNER_TRANSITIONS,
@@ -34,6 +35,7 @@ function PartnerActions({ row }: { row: PartnerRow }) {
 
 export default function PartnersPage() {
   const [editing, setEditing] = useState<Record<string, unknown> | null>(null);
+  const [creating, setCreating] = useState(false);
 
   // 액션 컬럼을 동적으로 덧붙임 (Plan SC: 파트너 승인 흐름)
   const actionCol: ColumnDef<PartnerRow, unknown> = {
@@ -41,8 +43,10 @@ export default function PartnersPage() {
     header: '승인/상태',
     cell: (c) => <PartnerActions row={c.row.original} />,
   };
+  // canCreate 활성화 → 목록 헤더의 '추가' 버튼이 계정 생성 폼을 연다.
   const config = {
     ...partnersConfig,
+    canCreate: true,
     listColumns: [...partnersConfig.listColumns, actionCol],
   };
 
@@ -51,6 +55,7 @@ export default function PartnersPage() {
       <ResourceListPage
         config={config as never}
         onRowClick={(row) => setEditing(row as Record<string, unknown>)}
+        onCreate={() => setCreating(true)}
       />
       <FormDrawer open={!!editing} title="파트너 편집" onClose={() => setEditing(null)}>
         <ResourceFormPage
@@ -58,6 +63,9 @@ export default function PartnersPage() {
           initial={editing}
           onDone={() => setEditing(null)}
         />
+      </FormDrawer>
+      <FormDrawer open={creating} title="파트너 계정 생성" onClose={() => setCreating(false)}>
+        <CreatePartnerForm onDone={() => setCreating(false)} />
       </FormDrawer>
     </>
   );

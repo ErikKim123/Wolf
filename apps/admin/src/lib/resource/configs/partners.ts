@@ -13,6 +13,8 @@ export interface PartnerRow {
   commission_rate: number;
   status: string;
   created_at: string;
+  /** 연결된 로그인 계정 (partners.user_id → profiles.id) */
+  profiles?: { email: string | null } | null;
 }
 
 const STATUS_OPTS = [
@@ -33,6 +35,7 @@ export const PARTNER_TRANSITIONS: Record<string, { to: string; label: string }[]
 
 const columns: ColumnDef<PartnerRow, unknown>[] = [
   { accessorKey: 'company_name', header: '회사명' },
+  { id: 'login_email', header: '로그인 ID', cell: (c) => c.row.original.profiles?.email ?? '—' },
   { accessorKey: 'country', header: '국가', cell: (c) => String(c.getValue() ?? '—') },
   { accessorKey: 'biz_no', header: '사업자번호' },
   { accessorKey: 'commission_rate', header: '수수료율', cell: (c) => `${(Number(c.getValue()) * 100).toFixed(1)}%` },
@@ -45,7 +48,7 @@ export const partnersConfig: ResourceConfig<PartnerRow> = {
   table: 'partners',
   title: '파트너회원 관리',
   canCreate: false, // 입점 신청은 가입 흐름, 어드민은 승인/편집
-  selectColumns: 'id, user_id, company_name, country, biz_no, commission_rate, status, created_at',
+  selectColumns: 'id, user_id, company_name, country, biz_no, commission_rate, status, created_at, profiles(email)',
   defaultSort: { column: 'created_at', asc: false },
   listColumns: columns,
   filters: [

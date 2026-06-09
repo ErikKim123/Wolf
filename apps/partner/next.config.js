@@ -6,7 +6,6 @@ const nextConfig = {
   transpilePackages: ['@wolf/shared'],
   experimental: {
     externalDir: true, // 모노레포 루트 밖(packages/) 파일 import 허용
-    serverComponentsExternalPackages: ['pg'], // 파트너 생성 라우트의 postgres 직접연결 (런타임 require)
   },
 };
 
