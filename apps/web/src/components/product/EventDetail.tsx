@@ -6,6 +6,7 @@ import {
   EVENT_SECTION_KEYS,
   pickI18n,
   formatPrice,
+  formatEventAddress,
   type EventSectionKey,
   type Locale,
 } from '@wolf/shared';
@@ -30,7 +31,8 @@ export function EventDetail({
   const banner = pickI18n(ev.banner, locale);
   const badge = pickI18n(ev.badge, locale);
   const subtitle = pickI18n(ev.subtitle, locale);
-  const location = pickI18n(ev.location, locale);
+  // 장소: 자유 텍스트(location) 우선, 없으면 구조화 주소(address) 한 줄 표기 — 마법사 신규 행사패스 호환
+  const location = pickI18n(ev.location, locale) || formatEventAddress(ev.address);
   const intl = intlLocale(locale);
   const soldout = product.status === 'soldout';
 

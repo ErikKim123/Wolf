@@ -4,17 +4,10 @@ import { useState } from 'react';
 import { Sparkles, Languages, Loader2, ChevronDown, ChevronUp, Code, Eye, X } from 'lucide-react';
 import { pickI18n, type I18n, type Locale } from '@wolf/shared';
 import { sanitizeHtml } from '@/lib/sanitize';
+import { RichEditor } from '@/components/editor/RichEditor';
 
 const LOCALES: Locale[] = ['en', 'ko', 'ja', 'zh-TW'];
 const LABEL: Record<string, string> = { en: 'EN', ko: 'KO', ja: 'JA', 'zh-TW': 'TW' };
-
-// 에디터 빠른 삽입 스니펫 (끝에 append)
-const SNIPPETS: { label: string; html: string }[] = [
-  { label: '제목', html: '\n<h2>제목</h2>' },
-  { label: '단락', html: '\n<p>내용을 입력하세요.</p>' },
-  { label: '목록', html: '\n<ul>\n  <li>항목 1</li>\n  <li>항목 2</li>\n</ul>' },
-  { label: '이미지', html: '\n<img src="https://" alt="" />' },
-];
 
 export function AiProductGenerator({
   value,
@@ -40,9 +33,6 @@ export function AiProductGenerator({
 
   function setLang(locale: Locale, h: string) {
     set({ ...html, [locale]: h });
-  }
-  function append(snippet: string) {
-    setLang(tab, (html[tab] ?? '') + snippet);
   }
 
   async function generate() {
@@ -191,26 +181,12 @@ export function AiProductGenerator({
         )}
       </div>
 
-      {/* 빠른 삽입 도구 */}
-      <div className="flex flex-wrap gap-1.5">
-        {SNIPPETS.map((s) => (
-          <button
-            key={s.label}
-            type="button"
-            onClick={() => append(s.html)}
-            className="rounded-pill border border-grey-300 px-3 py-1 text-xs text-grey-600 hover:border-black hover:text-black"
-          >
-            + {s.label}
-          </button>
-        ))}
-      </div>
-
-      {/* HTML 에디터 (직접 작성) */}
-      <textarea
-        className="input min-h-48 font-mono text-xs"
+      {/* 리치 에디터 (직접 작성) — 로케일 전환 시 재주입 위해 key={tab} */}
+      <RichEditor
+        key={tab}
         value={html[tab] ?? ''}
-        onChange={(e) => setLang(tab, e.target.value)}
-        placeholder={`<h2>제목</h2>\n<p>상품 설명을 HTML 로 직접 작성하거나 위 'AI 초안'으로 생성하세요.</p>\n\n저장하면 고객 상품 상세 페이지에 그대로 표시됩니다.`}
+        onChange={(h) => setLang(tab, h)}
+        placeholder="툴바로 서식을 적용해 작성하거나, 우측 상단 'AI 초안'으로 생성하세요."
       />
 
       {/* 라이브 미리보기 (항상) */}

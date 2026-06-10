@@ -30,7 +30,7 @@ export const eventPassesConfig: ResourceConfig<ProductRow> = {
   // seller_id 는 화면에서 현재 파트너 id 로 주입 (RLS with check: seller_id = auth.uid()).
   baseFilter: { column: 'product_type', op: 'eq', value: 'ticket' },
   createDefaults: { product_type: 'ticket', status: 'draft', is_partner_product: true },
-  // 수정 시 이벤트 콘텐츠 프리로드를 위해 event_content 포함 (detail_html_i18n 은 성능상 제외)
+  // 수정 시 이벤트 콘텐츠 프리로드를 위해 event_content 포함 (detail_html_i18n 은 성능상 제외 — 마법사 콘텐츠 단계서 지연 로드)
   selectColumns: 'id, code, seller_id, is_partner_product, product_type, category_id, name_i18n, prices, image_url, status, event_content',
   defaultSort: { column: 'created_at', asc: false },
   listColumns: columns,
@@ -38,17 +38,8 @@ export const eventPassesConfig: ResourceConfig<ProductRow> = {
     { name: 'q', label: '코드 검색', kind: 'search', searchColumns: ['code'] },
     { name: 'status', label: '상태', kind: 'select', options: STATUS_OPTS },
   ],
-  formFields: [
-    { name: 'code', label: '행사패스 코드', kind: 'text' },
-    { name: 'name_i18n', label: '행사패스명', kind: 'i18n', required: true },
-    { name: 'image_url', label: '대표 이미지(썸네일)', kind: 'custom' }, // ProductImageField
-    { name: 'category_id', label: '카테고리', kind: 'custom' }, // useCategoryOptions 주입
-    { name: 'prices', label: '가격', kind: 'prices' },
-    { name: 'attributes', label: '속성(JSON)', kind: 'json', placeholder: '{"seat":["VIP","R","S"]}' },
-    { name: 'detail_html_i18n', label: '상세 HTML (AI 생성)', kind: 'custom' }, // AiProductGenerator
-    { name: 'event_content', label: '이벤트 콘텐츠 (일정/장소)', kind: 'custom' }, // EventEditor
-    { name: 'status', label: '상태', kind: 'select', options: STATUS_OPTS, required: true },
-  ],
+  // 입력은 EventPassWizard(단계형)가 담당 — 평면 formFields 미사용.
+  formFields: [],
   // 가격 정수≥0, 상태 enum (product_type 은 고정값이라 검증 불필요)
   schema: z
     .object({
